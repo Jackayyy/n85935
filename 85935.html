@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>添加朋友 · 风格一</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 手机壳 */
+        .phone {
+            max-width: 375px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 44px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        /* 顶部装饰 */
+        .dynamic-island {
+            width: 110px;
+            height: 34px;
+            background-color: #000000;
+            margin: 12px auto 8px;
+            border-radius: 28px;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 20px 6px;
+            font-size: 14px;
+            font-weight: 590;
+            color: #1f2e3d;
+        }
+
+        /* 主内容区 */
+        .container {
+            padding: 8px 16px 32px;
+        }
+
+        /* GIF卡片 */
+        .gif-card {
+            background-color: #f8f8f8;
+            border-radius: 24px;
+            margin: 8px 0 24px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .gif-label {
+            font-size: 11px;
+            color: #8e8e93;
+            padding: 10px 12px 0;
+        }
+
+        .gif-preview {
+            width: calc(100% - 16px);
+            margin: 8px;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, #e9eef5, #fefefe);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .placeholder {
+            text-align: center;
+            color: #6c7283;
+        }
+
+        .placeholder span {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* 标题 */
+        .title {
+            font-size: 30px;
+            font-weight: 700;
+            color: #1b1c1e;
+            margin: 8px 0 28px;
+            letter-spacing: -0.3px;
+        }
+
+        /* 微信号卡片 */
+        .id-card {
+            background-color: #f8f8fc;
+            border-radius: 28px;
+            padding: 24px 20px;
+            margin-bottom: 20px;
+        }
+
+        .id-label {
+            font-size: 13px;
+            color: #8e8e93;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .id-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1b1c1e;
+            font-family: monospace;
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
+        }
+
+        .copy-btn {
+            background-color: #e6e6ed;
+            border: none;
+            padding: 14px;
+            border-radius: 60px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 590;
+            color: #007aff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:active {
+            background-color: #d1d1db;
+            transform: scale(0.98);
+        }
+
+        /* 底部安全区 */
+        .bottom-safe {
+            height: 20px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="dynamic-island"></div>
+    <div class="status-bar">
+        <span>9:41</span>
+        <span>📶 🔋 100%</span>
+    </div>
+
+    <div class="container">
+        <!-- GIF 展示区 -->
+        <div class="gif-card">
+            <div class="gif-label">📸 动态展示</div>
+            <div class="gif-preview" id="gifBox1">
+                <div class="placeholder">
+                    <span>🎬</span>
+                    <p style="font-size: 12px;">wx.GIF 预览区<br>（请替换有效链接）</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="title">添加朋友</div>
+
+        <!-- 微信号卡片 -->
+        <div class="id-card">
+            <div class="id-label">微信号</div>
+            <div class="id-value">N85935</div>
+            <button class="copy-btn" id="copyBtn1">📋 点击复制微信号</button>
+        </div>
+
+        <div class="bottom-safe"></div>
+    </div>
+</div>
+
+<div id="toastMsg" class="toast">✅ 微信号已复制</div>
+
+<script>
+    const gifUrl = 'https://raw.githubusercontent.com/Jackayyy/AYTEAM/main/wx.GIF';
+    const gifContainer = document.getElementById('gifBox1');
+
+    function loadGif(container, url) {
+        const img = new Image();
+        img.onload = () => {
+            container.innerHTML = '';
+            const imgElem = document.createElement('img');
+            imgElem.src = url;
+            imgElem.style.width = '100%';
+            imgElem.style.height = '100%';
+            imgElem.style.objectFit = 'cover';
+            container.appendChild(imgElem);
+        };
+        img.onerror = () => {
+            console.warn('GIF 加载失败');
+            if (!container.querySelector('.placeholder')) {
+                container.innerHTML = '<div class="placeholder"><span>⚠️</span><p style="font-size:12px;">GIF无法加载<br>请检查图片链接</p></div>';
+            }
+        };
+        img.src = url;
+    }
+
+    loadGif(gifContainer, gifUrl);
+
+    const wechatId = 'N85935';
+    const toast = document.getElementById('toastMsg');
+    let toastTimeout;
+
+    function showToast(msg) {
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toast.textContent = msg || '✅ 微信号已复制';
+        toast.style.opacity = '1';
+        toastTimeout = setTimeout(() => {
+            toast.style.opacity = '0';
+        }, 1800);
+    }
+
+    function copyId() {
+        navigator.clipboard.writeText(wechatId).then(() => {
+            showToast('✅ 微信号 N85935 已复制');
+        }).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = wechatId;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast('✅ 微信号已复制');
+        });
+    }
+
+    document.getElementById('copyBtn1').addEventListener('click', copyId);
+</script>
+
+</body>
+</html>
